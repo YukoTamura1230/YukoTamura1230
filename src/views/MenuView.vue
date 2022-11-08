@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-card width="400" class="mx-auto mt-10" color="indigo">
+    <v-card width="400" class="mx-auto mt-10" color="primary">
       <v-row justify="center">
         <v-card-actions>
           <v-btn height="50" width="400" color="white" to="/currentStockList">
@@ -9,7 +9,7 @@
         </v-card-actions>
       </v-row>
     </v-card>
-    <v-card width="400" class="mx-auto mt-10" color="indigo">
+    <v-card width="400" class="mx-auto mt-10" color="primary">
       <v-row justify="center">
         <v-card-actions>
           <v-btn height="50" width="400" color="white" to="/BuyRequestOutList"
@@ -18,14 +18,14 @@
         </v-card-actions>
       </v-row>
     </v-card>
-    <v-card width="400" class="mx-auto mt-10" color="indigo">
+    <v-card width="400" class="mx-auto mt-10" color="primary">
       <v-row justify="center">
         <v-card-actions>
           <v-btn height="50" width="400" color="white" to="/ApprovallistX">③購入</v-btn>
         </v-card-actions>
       </v-row>
     </v-card>
-    <v-card width="400" class="mx-auto mt-10" color="indigo">
+    <v-card width="400" class="mx-auto mt-10" color="primary">
       <v-row justify="center">
         <v-card-actions>
           <v-btn height="50" width="400" color="white" to="/EmpInquiry">④補充</v-btn>

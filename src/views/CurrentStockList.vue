@@ -16,7 +16,7 @@
               :key="item.equipmentName"
               cols="4"
             >
-              <v-card color="indigo">
+              <v-card color="primary">
                 <p>備品名：{{ item.equipmentName }}</p>
                 <p>扉番号：{{ item.doorNumber }}</p>
                 <p>備品数：{{ item.equipmentNum }}</p>
@@ -41,14 +41,20 @@
       </template>
 
       <template v-slot:default="{ isActive }">
-        <v-card v-if = "passf == false">
+        <v-card v-if="passf == false">
           <v-toolbar color="primary">申請画面</v-toolbar>
           <v-card-text>
             <p>備品名：{{ job[selectedItem].equipmentName }}</p>
             <p>扉番号：{{ job[selectedItem].doorNumber }}</p>
             <p>備品数：{{ job[selectedItem].equipmentNum }}</p>
             <p>申請可能数：{{ job[selectedItem].applicableNum }}</p>
-            <v-select v-model="numapp" :items="items" label="申請数" solo item-value="value"></v-select>
+            <v-select
+              v-model="numapp"
+              :items="items"
+              label="申請数"
+              solo
+              item-value="value"
+            ></v-select>
             <v-divider></v-divider>
           </v-card-text>
           <v-card-actions class="justify-end">
@@ -94,21 +100,24 @@ export default {
   //fetch_GET処理
   async mounted() {
     try {
-      const response = await fetch("https://54rof88ue4.execute-api.ap-northeast-1.amazonaws.com/g/api/currentstocklist");
+      const response = await fetch(
+        "https://54rof88ue4.execute-api.ap-northeast-1.amazonaws.com/g/api/currentstocklist"
+      );
       this.httpstatus = response.status;
       if (response.status != 200) {
-          console.error('response.ok:', response.ok);
-          console.error('response.status:', response.status);
-          console.error('response.statusText:', response.statusText);
-          throw new Error(`リクエスト失敗:${response.status} ${response.statusText}`);
-      } 
+        console.error("response.ok:", response.ok);
+        console.error("response.status:", response.status);
+        console.error("response.statusText:", response.statusText);
+        throw new Error(
+          `リクエスト失敗:${response.status} ${response.statusText}`
+        );
+      }
 
       const jsondata = await response.json();
       //this.job = JSON.stringify(jsondata)
       this.job = jsondata.currentStockList;
       this.length = jsondata.currentStockList.length; //JSONデータ量確認
-    }
-    catch (error) {
+    } catch (error) {
       console.log("error: " + error);
     }
   },
@@ -125,53 +134,71 @@ export default {
       }
       this.open = true;
     },
-    buyRegister: async function(){
-      console.log(JSON.stringify({ employeeNumber: sessionStorage.getItem('loginUser'), equipmentName: this.job[this.selectedItem].equipmentName, num: this.numapp, doorNumber: this.job[this.selectedItem].doorNumber}))
+    buyRegister: async function () {
+      console.log(
+        JSON.stringify({
+          employeeNumber: sessionStorage.getItem("loginUser"),
+          equipmentName: this.job[this.selectedItem].equipmentName,
+          num: this.numapp,
+          doorNumber: this.job[this.selectedItem].doorNumber,
+        })
+      );
 
       const requestOptions = {
-        method: 'POST',
-        mode: 'cors', // no-cors, *cors, same-origin
-        headers: { 'Accept': 'application/json' },
-        body: JSON.stringify({ employeeNumber: sessionStorage.getItem('loginUser'), equipmentName: this.job[this.selectedItem].equipmentName, num: this.numapp, doorNumber: this.job[this.selectedItem].doorNumber})
+        method: "POST",
+        mode: "cors", // no-cors, *cors, same-origin
+        headers: { Accept: "application/json" },
+        body: JSON.stringify({
+          employeeNumber: sessionStorage.getItem("loginUser"),
+          equipmentName: this.job[this.selectedItem].equipmentName,
+          num: this.numapp,
+          doorNumber: this.job[this.selectedItem].doorNumber,
+        }),
       };
       try {
-        const response = await fetch('https://k07pi81bq4.execute-api.ap-northeast-1.amazonaws.com/g/api/buyregister', requestOptions);
+        const response = await fetch(
+          "https://k07pi81bq4.execute-api.ap-northeast-1.amazonaws.com/g/api/buyregister",
+          requestOptions
+        );
         this.httpstatus = response.status;
         if (response.status != 200) {
-            console.error('response.ok:', response.ok);
-            console.error('response.status:', response.status);
-            console.error('response.statusText:', response.statusText);
-            throw new Error(`リクエスト失敗:${response.status} ${response.statusText}`);
-        } 
+          console.error("response.ok:", response.ok);
+          console.error("response.status:", response.status);
+          console.error("response.statusText:", response.statusText);
+          throw new Error(
+            `リクエスト失敗:${response.status} ${response.statusText}`
+          );
+        }
 
         const jsondata = await response.json();
-        this.job = jsondata
-        console.log(this.job['registerResult'])
+        this.job = jsondata;
+        console.log(this.job["registerResult"]);
 
-        if( this.job['registerResult'] == "True"){
-            this.passf = true
+        if (this.job["registerResult"] == "True") {
+          this.passf = true;
+        } else {
+          this.passf = false;
         }
-        else{
-            this.passf = false
-        }
-      }
-      catch (error) {
-        this.erroritem = error
+      } catch (error) {
+        this.erroritem = error;
         console.log("error: " + error);
         console.log("error: " + error.status);
         console.log("error: " + error.statusText);
       }
 
-      if(this.passf == true){
-        alert("申請登録が正常に完了しました")
-      }
-      else{
-        alert("××××× 申請登録時、エラーが発生しました!!! ×××××" + "\r\n\r\n" + "エラー内容：" + this.erroritem)
+      if (this.passf == true) {
+        alert("申請登録が正常に完了しました");
+      } else {
+        alert(
+          "××××× 申請登録時、エラーが発生しました!!! ×××××" +
+            "\r\n\r\n" +
+            "エラー内容：" +
+            this.erroritem
+        );
       }
 
-      location.reload(true)
-    }
+      location.reload(true);
+    },
   },
 };
 </script>
-
